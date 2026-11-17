@@ -58,8 +58,49 @@ class Requisition:
 
         return self.status
 
+    def display_requisitions(self):
+        print("\n-----------------------------")
+        print("PURCHASE REQUISITION DETAILS")
+        print("-----------------------------")
 
-# Testing the requisition system
+        print("Date:", self.date)
+        print("Requisition ID:", self.requisition_id)
+        print("Staff ID:", self.staff_id)
+        print("Staff Name:", self.staff_name)
+        print(f"Total: ${self.total:.2f}")
+        print("Status:", self.status)
+
+        if self.approval_reference:
+            print("Approval Reference Number:",
+                    self.approval_reference)
+        else:
+            print("Approval Reference Number: Not available")
+
+        print("-----------------------------")
+
+    def requisition_statistics(self, requisitions):
+        total = len(requisitions)
+        approved = 0
+        pending = 0
+        not_approved = 0
+
+        for requisition in requisitions:
+            if requisition.status == "Approved":
+                approved += 1
+            elif requisition.status == "Pending":
+                pending += 1
+            elif requisition.status == "Not approved":
+                not_approved += 1
+
+        print("\nREQUISITION STATISTICS")
+        print("Total Requisitions:", total)
+        print("Approved:", approved)
+        print("Pending:", pending)
+        print("Not Approved:", not_approved)
+
+        return total, approved, pending, not_approved
+
+
 request1 = Requisition("17/11/2026", "FN19", "John Paul")
 
 request1.add_requisition("Keyboard", 100)
@@ -92,3 +133,51 @@ request2.respond_requisition("Approved")
 print("After Manager Decision:", request2.status)
 print("Approval Reference:", request2.approval_reference)
 
+request1.display_requisitions()
+request2.display_requisitions()
+
+# Third requisition
+request3 = Requisition("17/11/2026", "FN21", "Sarah Lee")
+request3.requisition_id = 10003
+request3.add_requisition("Printer", 800)
+request3.approve_requisition()
+request3.respond_requisition("Not approved")
+
+# Fourth requisition
+request4 = Requisition("17/11/2026", "FN22", "David Kim")
+request4.requisition_id = 10004
+request4.add_requisition("Office Chair", 300)
+request4.approve_requisition()
+
+# Fifth requisition
+request5 = Requisition("17/11/2026", "FN23", "Emma Wilson")
+request5.requisition_id = 10005
+request5.add_requisition("Projector", 1500)
+request5.approve_requisition()
+
+all_requisitions = [
+    request1,
+    request2,
+    request3,
+    request4,
+    request5
+]
+request1.requisition_statistics(all_requisitions)
+
+# Final testing of all requisitions
+
+print("\nFINAL REQUISITION RESULTS")
+
+for request in all_requisitions:
+    request.display_requisitions()
+
+print("\nFINAL STATISTICS")
+request1.requisition_statistics(all_requisitions)
+
+# Boundary testing
+boundary_test = Requisition("17/11/2026", "FN24", "Test Staff")
+boundary_test.requisition_id = 10006
+boundary_test.add_requisition("Office Equipment", 500)
+boundary_test.approve_requisition()
+
+print("Boundary Test Status:", boundary_test.status)
