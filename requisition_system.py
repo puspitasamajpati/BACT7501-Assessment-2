@@ -18,6 +18,14 @@ class Requisition:
         self.approval_reference = ""
 
     def add_requisition(self, item_name, item_price):
+        if not isinstance(item_price, (int, float)):
+            print("Please enter a valid price.")
+            return self.total
+
+        if item_price < 0:
+            print("Price cannot be negative.")
+            return self.total
+        
         item = {
             "name": item_name,
             "price": item_price
@@ -42,17 +50,18 @@ class Requisition:
 
         return self.status
 
-    def respond_requisition(self, decision):
+    def respond_to_requisition(self, decision):
         if self.status != "Pending":
             print("This requisition is already processed.")
             return self.status
-
-        if decision == "Approved":
+        
+        decision = decision.strip().lower()
+        if decision == "approved":
             self.status = "Approved"
             last_three = str(self.requisition_id)[-3:]
             self.approval_reference = self.staff_id + last_three
 
-        elif decision == "Not approved":
+        elif decision == "not approved":
             self.status = "Not approved"
             self.approval_reference = ""
 
@@ -107,7 +116,7 @@ class Requisition:
 request1 = Requisition("17/11/2026", "FN19", "John Paul")
 
 request1.add_requisition("Keyboard", 100)
-request1.add_requisition("Mouse", 50)
+request1.add_requisition("Mouse", -50)
 request1.add_requisition("Monitor", 300)
 
 print("Final Total:", request1.total)
@@ -127,7 +136,7 @@ request2.approve_requisition()
 
 print("Before Manager Decision:", request2.status)
 
-request2.respond_requisition("Approved")
+request2.respond_to_requisition("Approved")
 
 print("After Manager Decision:", request2.status)
 print("Approval Reference:", request2.approval_reference)
@@ -135,18 +144,15 @@ print("Approval Reference:", request2.approval_reference)
 request1.display_requisitions()
 request2.display_requisitions()
 
-# Third requisition
 request3 = Requisition("17/11/2026", "FN21", "Sarah Lee")
 request3.add_requisition("Printer", 800)
 request3.approve_requisition()
-request3.respond_requisition("Not approved")
+request3.respond_to_requisition("Not approved")
 
-# Fourth requisition
 request4 = Requisition("17/11/2026", "FN22", "David Kim")
 request4.add_requisition("Office Chair", 300)
 request4.approve_requisition()
 
-# Fifth requisition
 request5 = Requisition("17/11/2026", "FN23", "Emma Wilson")
 request5.add_requisition("Projector", 1500)
 request5.approve_requisition()
@@ -158,9 +164,6 @@ all_requisitions = [
     request4,
     request5
 ]
-request1.requisition_statistics(all_requisitions)
-
-# Final testing of all requisitions
 
 print("\nFINAL REQUISITION RESULTS")
 
@@ -184,7 +187,7 @@ for request in all_requisitions:
         request.approval_reference
     )
 
-request1.requisition_statistics(all_requisitions)
+
 
 
 
